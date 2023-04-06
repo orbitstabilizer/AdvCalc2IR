@@ -1,0 +1,3 @@
+-std=gnu11
+-I 
+/Users/yusufakin/tmp/CmpE/cmpe230/hw1/AdvCalc/include/
