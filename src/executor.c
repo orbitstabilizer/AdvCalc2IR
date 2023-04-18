@@ -163,11 +163,13 @@ operand_t eval_util(SyntaxNode *parent, Dictionary *dict, bool *error, FILE* out
       char *var = (char *)malloc(sizeof(char) * (len + 1));
       strncpy(var, parent->token->start, len);
       var[len] = '\0';
+      
       int is_declared = 0;
       operand_t val = get_var(dict, var, &is_declared);
       if (!is_declared) {
           *error = true;
       }
+
       free(var);
       // TODO: register the variable
       return val;
