@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dictionary.h"
-static Chain *put(Dictionary* dict, char *name, long value);
+static Chain *put(Dictionary* dict, char *name, operand_t value);
 static Chain *get(Dictionary* dict, char *s);
 
 Dictionary* new_dictionary(){
@@ -32,7 +32,7 @@ Chain *get(Dictionary* dict, char *s)
 }
 
 
-Chain *put(Dictionary* dict, char *name, long value)
+Chain *put(Dictionary* dict, char *name, operand_t value)
 {
     Chain *np;
     unsigned hashval;
@@ -78,11 +78,11 @@ void free_dict(Dictionary* dict){
   free(dict);
 }
 
-void set_var(Dictionary *dict, char *name, long value){
+void set_var(Dictionary *dict, char *name, operand_t value){
   put(dict, name, value);
 }
 
-long get_var(Dictionary *dict, char *name){
+operand_t get_var(Dictionary *dict, char *name){
   Chain* bin = get(dict, name);
   if(bin == NULL){
     // if varialbe is not declared 

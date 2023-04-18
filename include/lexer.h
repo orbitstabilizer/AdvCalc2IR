@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef operand_t int32_t;
+
 /* Token types */
 
 typedef enum TokenType {
@@ -56,7 +58,7 @@ struct Token {
   TokenType type;
   char *start;
   size_t length;
-  long value;
+  operand_t value;
 };
 
 /* Lexer struct
