@@ -35,7 +35,7 @@ typedef struct SyntaxTree SyntaxTree;
  * <primary> = <func> | <var>
  * <func> = <funcname>(<term>,<term>) | <unop>(<term>)
  * <var> = literal or identifier token
- * <binop> = [*%\+-&|]
+ * <binop> = [/%*+-&|]
  * <funcname> = (xor|ls|rs|lr|rr)
  * <unop> = not
  */
