@@ -19,6 +19,6 @@ typedef int32_t operand_t;
  * The function creates its own lexer and parser, and uses them to parse the input string. It then executes the parsed statement.
  * The output string is written to the output string.
  */
-int exec(Dictionary *dict, char *input, char *output);
+int exec(Dictionary *dict, char *input, FILE* output_file);
 
 #endif

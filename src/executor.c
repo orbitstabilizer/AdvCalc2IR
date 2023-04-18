@@ -20,7 +20,7 @@ static operand_t lshift(operand_t a, operand_t b, int reg_a, int reg_b, FILE* ou
 static operand_t rshift(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
 static operand_t lrotate(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
 static operand_t rrotate(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
-static operand_t b_not(operand_t a, operand_t null);
+static operand_t b_not(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
 
 
 #undef DEBUG
@@ -112,22 +112,16 @@ operand_t rshift(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_fi
     return print_util(new_register(), a, b, reg_a, reg_b, output_file, "rshift");
 }
 operand_t lrotate(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
-  return (a << b) | (a >> (sizeof(operand_t) * 8 - b));
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "lrotate");
 }
 operand_t rrotate(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
-  return (a >> b) | (a << (sizeof(operand_t) * 8 - b));
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "rrorate");
 }
-operand_t b_not(operand_t a, operand_t null) {
-  // to resolve unused parameter warning
-  null = 0;
-  a = a + null;
-  return ~a;
+operand_t b_not(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "not_is_not_supported");
 }
-operand_t paran(operand_t a, operand_t null) {
-  // to resolve unused parameter warning
-  null = 0;
-  a = a + null;
-  return a;
+operand_t paran(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+  return reg_a;
 }
 
 /* operand_t str_to_long(char *str) {
@@ -137,17 +131,18 @@ operand_t paran(operand_t a, operand_t null) {
   return atol(str);
 } */
 
-operand_t eval_util(SyntaxNode *parent, Dictionary *dict, bool *error) {
+operand_t eval_util(SyntaxNode *parent, Dictionary *dict, bool *error, FILE* output_file) {
   if (*error || parent == NULL || parent->type == ERROR)
     RAISE_ERROR;
   operand_t left = 0;
   operand_t right = 0;
   if (parent->type == BINOP || parent->type == UNOP || parent->type == PAREN)
-    left = eval_util(parent->left, dict, error);
+    left = eval_util(parent->left, dict, error, output_file);
   if (parent->type == BINOP)
-    right = eval_util(parent->right, dict, error);
+    right = eval_util(parent->right, dict, error, output_file);
   if (parent->type == TOKEN) {
     if (parent->token->type == TOKEN_LITERAL) {
+      parent->reg = -1;
       return parent->token->value;
     } else if (parent->token->type == TOKEN_IDENTIFIER) {
       size_t len = parent->token->length;
@@ -156,16 +151,18 @@ operand_t eval_util(SyntaxNode *parent, Dictionary *dict, bool *error) {
       var[len] = '\0';
       operand_t val = get_var(dict, var);
       free(var);
+      parent->reg = new_register(); // TODO: register the variable
       return val;
     }
   }
   if (parent->type == BINOP || parent->type == UNOP) {
     op_t op = token_to_op(parent->mid->token->type);
     if (op != NULL) {
-      return op(left, right);
+      return parent->reg = op(left, right, parent->left->reg, parent->right->reg, output_file);
     }
   }
   if (parent->type == PAREN) {
+    parent->reg = parent->left->reg;
     return left;
   }
   return 0;
@@ -175,7 +172,7 @@ error:
 }
 
 
-int exec(Dictionary *dict, char *input, char *output) {
+int exec(Dictionary *dict, char *input, FILE* output_file) {
   size_t input_len = strlen(input);
   Lexer *lexer = lexer_new(input, input_len);
   SyntaxTree *tree = NULL;
@@ -205,12 +202,11 @@ int exec(Dictionary *dict, char *input, char *output) {
     tree = parse(lexer->token_list);
 
   bool eval_err = false;
-  operand_t res = eval_util(tree->root, dict, &eval_err);
+  operand_t res = eval_util(tree->root, dict, &eval_err, output_file);
   if (eval_err)
     goto execution_error;
   else if (is_assignment)
     set_var(dict, variable, res);
-  snprintf(output, 25, "%ld", res);
   goto end;
 
 execution_error:
