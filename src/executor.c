@@ -7,18 +7,18 @@
 
 
 
-// static long str_to_long(char *str);
-static long add(long a, long b);
-static long sub(long a, long b);
-static long mul(long a, long b);
-static long b_and (long a, long b);
-static long b_or (long a, long b);
-static long b_xor (long a, long b);
-static long lshift(long a, long b);
-static long rshift(long a, long b);
-static long lrotate(long a, long b);
-static long rrotate(long a, long b);
-static long b_not(long a, long null);
+// static operand_t str_to_long(char *str);
+static operand_t add(operand_t a, operand_t b);
+static operand_t sub(operand_t a, operand_t b);
+static operand_t mul(operand_t a, operand_t b);
+static operand_t b_and (operand_t a, operand_t b);
+static operand_t b_or (operand_t a, operand_t b);
+static operand_t b_xor (operand_t a, operand_t b);
+static operand_t lshift(operand_t a, operand_t b);
+static operand_t rshift(operand_t a, operand_t b);
+static operand_t lrotate(operand_t a, operand_t b);
+static operand_t rrotate(operand_t a, operand_t b);
+static operand_t b_not(operand_t a, operand_t null);
 
 
 #undef DEBUG
@@ -29,7 +29,7 @@ static long b_not(long a, long null);
     goto error;                                                                \
   } while (0)
 
-typedef long (*op_t)(long, long);
+typedef operand_t (*op_t)(operand_t, operand_t);
 op_t token_to_op(TokenType type) {
   switch (type) {
   case TOKEN_STAR:
@@ -59,45 +59,45 @@ op_t token_to_op(TokenType type) {
   }
 }
 
-long add(long a, long b) { return a + b; }
-long sub(long a, long b) { return a - b; }
-long mul(long a, long b) { return a * b; }
-long b_and(long a, long b) { return a & b; }
-long b_or(long a, long b) { return a | b; }
-long b_xor(long a, long b) { return a ^ b; }
-long lshift(long a, long b) { return a << b; }
-long rshift(long a, long b) { return a >> b; }
-long lrotate(long a, long b) {
-  return (a << b) | (a >> (sizeof(long) * 8 - b));
+operand_t add(operand_t a, operand_t b) { return a + b; }
+operand_t sub(operand_t a, operand_t b) { return a - b; }
+operand_t mul(operand_t a, operand_t b) { return a * b; }
+operand_t b_and(operand_t a, operand_t b) { return a & b; }
+operand_t b_or(operand_t a, operand_t b) { return a | b; }
+operand_t b_xor(operand_t a, operand_t b) { return a ^ b; }
+operand_t lshift(operand_t a, operand_t b) { return a << b; }
+operand_t rshift(operand_t a, operand_t b) { return a >> b; }
+operand_t lrotate(operand_t a, operand_t b) {
+  return (a << b) | (a >> (sizeof(operand_t) * 8 - b));
 }
-long rrotate(long a, long b) {
-  return (a >> b) | (a << (sizeof(long) * 8 - b));
+operand_t rrotate(operand_t a, operand_t b) {
+  return (a >> b) | (a << (sizeof(operand_t) * 8 - b));
 }
-long b_not(long a, long null) {
+operand_t b_not(operand_t a, operand_t null) {
   // to resolve unused parameter warning
   null = 0;
   a = a + null;
   return ~a;
 }
-long paran(long a, long null) {
+operand_t paran(operand_t a, operand_t null) {
   // to resolve unused parameter warning
   null = 0;
   a = a + null;
   return a;
 }
 
-/* long str_to_long(char *str) {
+/* operand_t str_to_long(char *str) {
   if (str == NULL) {
     return 0;
   }
   return atol(str);
 } */
 
-long eval_util(SyntaxNode *parent, Dictionary *dict, bool *error) {
+operand_t eval_util(SyntaxNode *parent, Dictionary *dict, bool *error) {
   if (*error || parent == NULL || parent->type == ERROR)
     RAISE_ERROR;
-  long left = 0;
-  long right = 0;
+  operand_t left = 0;
+  operand_t right = 0;
   if (parent->type == BINOP || parent->type == UNOP || parent->type == PAREN)
     left = eval_util(parent->left, dict, error);
   if (parent->type == BINOP)
@@ -110,7 +110,7 @@ long eval_util(SyntaxNode *parent, Dictionary *dict, bool *error) {
       char *var = (char *)malloc(sizeof(char) * (len + 1));
       strncpy(var, parent->token->start, len);
       var[len] = '\0';
-      long val = get_var(dict, var);
+      operand_t val = get_var(dict, var);
       free(var);
       return val;
     }
@@ -161,7 +161,7 @@ int exec(Dictionary *dict, char *input, char *output) {
     tree = parse(lexer->token_list);
 
   bool eval_err = false;
-  long res = eval_util(tree->root, dict, &eval_err);
+  operand_t res = eval_util(tree->root, dict, &eval_err);
   if (eval_err)
     goto execution_error;
   else if (is_assignment)

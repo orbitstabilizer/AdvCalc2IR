@@ -3,6 +3,8 @@
 
 #include "parser.h"
 #include "dictionary.h"
+
+typedef operand_t int32_t;
 /*
  * This function executes the statetement given as a input string, and writes the output to the output string.
  * return value represents the status of the execution.

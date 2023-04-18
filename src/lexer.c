@@ -4,7 +4,7 @@
  * str: string to parse
  * val: pointer to long to store value
  */
-static bool parseLong(const char *str, long *val);
+static bool parseLong(const char *str, operand_t *val);
 static const char *str_token_type[] = {
   "TOKEN_UNKNOWN", 
   "TOKEN_LITERAL",
@@ -30,7 +30,7 @@ static const char *str_token_type[] = {
   "TOKEN_DIV"
 };
 
-bool parseLong(const char *str, long *val){
+bool parseLong(const char *str, operand_t *val){
     while(*str == '0' && *(str+1) != '\0')
         str++;
     char *temp;
@@ -39,7 +39,7 @@ bool parseLong(const char *str, long *val){
     *val = strtol(str, &temp, 0);
 
     if (temp == str || *temp != '\0' ||
-        ((*val == LONG_MIN || *val == LONG_MAX) && errno == ERANGE))
+        ((*val == INT_MIN || *val == INT_MAX) && errno == ERANGE))
         rc = false;
 
     return rc;
@@ -78,7 +78,7 @@ void print_lex(Lexer *lexer){
     printf("}\n");
 }
 
-void init_token(Token *token, TokenType type, long value, size_t value_len, char* start ){
+void init_token(Token *token, TokenType type, operand_t value, size_t value_len, char* start ){
     token->type = type;
     token->value = value;
     token->length = value_len;
@@ -87,7 +87,7 @@ void init_token(Token *token, TokenType type, long value, size_t value_len, char
         char sub_str[value_len + 1];
         strncpy(sub_str, start, value_len);
         sub_str[value_len] = '\0';
-        long val;
+        operand_t val;
         if (parseLong(sub_str, &val)){
             token->value = val;
         }else{
