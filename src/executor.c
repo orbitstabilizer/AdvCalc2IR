@@ -19,6 +19,8 @@ static operand_t rshift(operand_t a, operand_t b);
 static operand_t lrotate(operand_t a, operand_t b);
 static operand_t rrotate(operand_t a, operand_t b);
 static operand_t b_not(operand_t a, operand_t null);
+static operand_t sdiv(operand_t a, operand_t b);
+static operand_t mod(operand_t a, operand_t b);
 
 
 #undef DEBUG
@@ -73,6 +75,7 @@ operand_t lshift(operand_t a, operand_t b) { return a << b; }
 operand_t rshift(operand_t a, operand_t b) { return a >> b; }
 operand_t lrotate(operand_t a, operand_t b) {
   return (a << b) | (a >> (sizeof(operand_t) * 8 - b));
+}
 operand_t sdiv(operand_t a, operand_t b) {
   if (b == 0) {
     return 0;

@@ -71,7 +71,7 @@ void print_lex(Lexer *lexer){
         strncpy(sub_str, token->start, token->length);
         sub_str[token->length] = '\0';
 
-        printf("\t\tToken{\n\t\t\ttype: %s\n\t\t\tvalue: %ld\n\t\t\tlength: %zu\n\t\t\tstart: '%s'\n\t\t},\n",
+        printf("\t\tToken{\n\t\t\ttype: %s\n\t\t\tvalue: %d\n\t\t\tlength: %zu\n\t\t\tstart: '%s'\n\t\t},\n",
                str_token_type[token->type], token->value, token->length, sub_str);
     }
     printf("\t}\n");
