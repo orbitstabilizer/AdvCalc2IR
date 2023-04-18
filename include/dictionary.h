@@ -44,7 +44,7 @@ void set_var(Dictionary *dict, char *name, operand_t value);
  * dict: dictionary to get variable from
  * name: name of variable
  */
-operand_t get_var(Dictionary *dict, char *name);
+operand_t get_var(Dictionary *dict, char *name, int* is_declared);
 
 /*
  * Free a dictionary

@@ -55,7 +55,7 @@ void print_dict(Dictionary* dict){
     if (bin != NULL){
       printf("bin %d: ", i);
       while (bin != NULL){
-        printf("%s = %ld, ", bin->name, bin->value);
+        printf("%s = %d, ", bin->name, bin->value);
         bin = bin->next;
       }
       printf("\n");
@@ -82,12 +82,14 @@ void set_var(Dictionary *dict, char *name, operand_t value){
   put(dict, name, value);
 }
 
-operand_t get_var(Dictionary *dict, char *name){
+operand_t get_var(Dictionary *dict, char *name, int *is_declared){
   Chain* bin = get(dict, name);
   if(bin == NULL){
     // if varialbe is not declared 
+    *is_declared = 0;
     return 0;
   }
+  *is_declared = 1;
   return bin->value;
 }
 
