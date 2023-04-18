@@ -1,6 +1,7 @@
 #ifndef EXECUTOR_H
 #define EXECUTOR_H
 
+#include "stdio.h"
 #include "parser.h"
 #include "dictionary.h"
 
