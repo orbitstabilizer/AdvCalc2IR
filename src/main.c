@@ -15,6 +15,26 @@ void epilog(FILE* fp);
 declare i32 @printf(i8*, ...)
 @print.str = constant [4 x i8] c"%d\0A\00"
 
+define i32 @lr(i32 %x, i32 %c) {
+  %l1 = shl i32 %x, %c
+  %l2 = sub i32 32, %c
+  %l3 = lshr i32 %x, %l2
+  %l4 = or i32 %l1, %l3
+  ret i32 %l4
+}
+
+define i32 @rr(i32 %x, i32 %c) {
+  %l1 = lshr i32 %x, %c
+  %l2 = sub i32 32, %c
+  %l3 = shl i32 %x, %l2
+  %l4 = or i32 %l1, %l3
+  ret i32 %l4
+}
+
+define i32 @not(i32 %x) {
+  %n1 = xor i32 %x, -1
+  ret i32 %n1
+}
 
 define i32 @main() {
 */
@@ -23,6 +43,26 @@ void prelog(FILE* fp){
   fprintf(fp, "declare i32 @printf(i8*, ...)\n");
   fprintf(fp, "@print.str = constant [4 x i8] c\"%%d\\0A\\00\"\n");
   fprintf(fp, "define i32 @main() {\n");
+  fprintf(fp, "define i32 @lr(i32 %%x, i32 %%c) {\n");
+  fprintf(fp, "  %%l1 = shl i32 %%x, %%c \n");
+  fprintf(fp, "  %%l2 = sub i32 32, %%c \n");
+  fprintf(fp, "  %%l3 = lshr i32 %%x, %%l2 \n");
+  fprintf(fp, "  %%l4 = or i32 %%l1, %%l3 \n");
+  fprintf(fp, "  ret i32 %%l4 \n");
+  fprintf(fp, "}\n");
+  fprintf(fp, "define i32 @rr(i32 %%x, i32 %%c) {\n");
+  fprintf(fp, "  %%l1 = lshr i32 %%x, %%c \n");
+  fprintf(fp, "  %%l2 = sub i32 32, %%c \n");
+  fprintf(fp, "  %%l3 = shl i32 %%x, %%l2 \n");
+  fprintf(fp, "  %%l4 = or i32 %%l1, %%l3 \n");
+  fprintf(fp, "  ret i32 %%l4 \n");
+  fprintf(fp, "}\n");
+  fprintf(fp, "define i32 @not(i32 %%x) {\n");
+  fprintf(fp, "  %%n1 = xor i32 %%x, -1 \n");
+  fprintf(fp, "  ret i32 %%n1 \n");
+  fprintf(fp, "}\n");
+  fprintf(fp, "define i32 @main() {\n");
+
 }
 void epilog(FILE* fp){
   fprintf(fp, "ret i32 0\n");
@@ -37,6 +77,7 @@ int main(int argc, char* argv[]) {
   if (fp == NULL) {
     LOG_ERROR("Could not open file %s", argv[1]);
   }
+  int line_number = 0 ; 
   // split filename file.adv to file
   char *filename = strtok(argv[1], ".");
   char output_filename[MAX_FILENAME];
@@ -63,12 +104,13 @@ int main(int argc, char* argv[]) {
         // fprintf(output_file, "%s\n", output);
         break;
       case 2:
-        // printf("Error!\n");
+        printf("Error on line %d\n", line_number);
         // fprintf(output_file, "Error!\n");
         break;
       default:
         break;
     }
+    line_number++;
   }
   if(dict)
     free_dict(dict);
