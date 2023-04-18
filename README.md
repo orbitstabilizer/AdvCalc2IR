@@ -7,6 +7,13 @@ date: 2023-04-06
 ---
 \pagebreak
 
+# TODO:
+	- [x] Add modulo and division operations
+	- [x] Change variable type to int32 in lexer, executor 
+	- [x] Read/Write from file
+	- [ ] Write translation Code
+	- [ ] Error handling: undeclared variables
+
 # AdvCalc++ Transcompiler
 
 **AdvCalc2ir** is a transcompiler that translates **AdvCalc++** source code to **LLVM IR** code.
