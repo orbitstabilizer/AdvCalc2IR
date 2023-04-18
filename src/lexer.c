@@ -25,7 +25,9 @@ static const char *str_token_type[] = {
   "TOKEN_EOF",     
   "TOKEN_LEFT_PAREN",  
   "TOKEN_RIGHT_PAREN", 
-  "TOKEN_COMMA"
+  "TOKEN_COMMA", 
+  "TOKEN_MOD",
+  "TOKEN_DIV"
 };
 
 bool parseLong(const char *str, long *val){
@@ -144,6 +146,12 @@ void lexer_next(Lexer *lexer){
         case ',':
             init_token(token, TOKEN_COMMA, 0, 1, &lexer->input[lexer->cur_pos]);
             break;
+        case '/':
+            init_token(token, TOKEN_DIV, 0, 1, &lexer->input[lexer->cur_pos]);
+            break;
+        case '%':
+            init_token(token, TOKEN_MOD, 0, 1, &lexer->input[lexer->cur_pos]);
+            break;
         default:
             MATCHED = false;
     }
@@ -153,7 +161,7 @@ void lexer_next(Lexer *lexer){
         return;
     }
 
-    if (c == '%'){
+    if (c == ';'){
         init_token(token, TOKEN_EOF, 0, lexer->input_len - lexer->cur_pos, &lexer->input[lexer->cur_pos]);
         lexer->cur_pos = lexer->input_len;
         lexer->cur_token++;
@@ -234,18 +242,16 @@ void lexer_next(Lexer *lexer){
     }
 
 }
-/*
-int main(){
-    char *input = "xor(1,2)";//"XOR_var = lr(not(5) + 3*93580280895, 1) + lru % ajefo ";// = (a + b) - cenk*31 + 696789876789876789876787";
-    size_t input_len = strlen(input);
-    Lexer *lexer = lexer_new(input, input_len);
-    do {
-        lexer_next(lexer);
-    } while (lexer->token_list[lexer->cur_token -1].type != TOKEN_EOF);
+// int main(){
+//     char *input = "XOR_var = lr(not(5) + 3*93580280895, 1) + lru % ajefo / 92309 ;comment";// = (a + b) - cenk*31 + 696789876789876789876787";
+//     size_t input_len = strlen(input);
+//     Lexer *lexer = lexer_new(input, input_len);
+//     do {
+//         lexer_next(lexer);
+//     } while (lexer->token_list[lexer->cur_token -1].type != TOKEN_EOF);
 
-    print_lex(lexer);
+//     print_lex(lexer);
 
-    lexer_free(lexer);
+//     lexer_free(lexer);
 
-}
-*/
+// }

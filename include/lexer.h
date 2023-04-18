@@ -41,6 +41,8 @@ typedef enum TokenType {
   TOKEN_LEFT_PAREN,  // 17
   TOKEN_RIGHT_PAREN, // 18
   TOKEN_COMMA,       // 19
+  TOKEN_MOD,         // 20
+  TOKEN_DIV,         // 21
 } TokenType;
 
 /* Token struct
