@@ -8,19 +8,19 @@
 
 
 // static operand_t str_to_long(char *str);
-static operand_t add(operand_t a, operand_t b);
-static operand_t sub(operand_t a, operand_t b);
-static operand_t mul(operand_t a, operand_t b);
-static operand_t b_and (operand_t a, operand_t b);
-static operand_t b_or (operand_t a, operand_t b);
-static operand_t b_xor (operand_t a, operand_t b);
-static operand_t lshift(operand_t a, operand_t b);
-static operand_t rshift(operand_t a, operand_t b);
-static operand_t lrotate(operand_t a, operand_t b);
-static operand_t rrotate(operand_t a, operand_t b);
+static operand_t add(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t sub(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t mul(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t sdiv(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t mod(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t b_and (operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t b_or (operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t b_xor (operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t lshift(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t rshift(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t lrotate(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
+static operand_t rrotate(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file);
 static operand_t b_not(operand_t a, operand_t null);
-static operand_t sdiv(operand_t a, operand_t b);
-static operand_t mod(operand_t a, operand_t b);
 
 
 #undef DEBUG
@@ -31,7 +31,7 @@ static operand_t mod(operand_t a, operand_t b);
     goto error;                                                                \
   } while (0)
 
-typedef operand_t (*op_t)(operand_t, operand_t);
+typedef operand_t (*op_t)(operand_t, operand_t, int, int, FILE*);
 op_t token_to_op(TokenType type) {
   switch (type) {
   case TOKEN_STAR:
@@ -65,30 +65,56 @@ op_t token_to_op(TokenType type) {
   }
 }
 
-operand_t add(operand_t a, operand_t b) { return a + b; }
-operand_t sub(operand_t a, operand_t b) { return a - b; }
-operand_t mul(operand_t a, operand_t b) { return a * b; }
-operand_t b_and(operand_t a, operand_t b) { return a & b; }
-operand_t b_or(operand_t a, operand_t b) { return a | b; }
-operand_t b_xor(operand_t a, operand_t b) { return a ^ b; }
-operand_t lshift(operand_t a, operand_t b) { return a << b; }
-operand_t rshift(operand_t a, operand_t b) { return a >> b; }
-operand_t lrotate(operand_t a, operand_t b) {
+int register_count = 1;
+int new_register() { return register_count++; }
+
+int print_util(int new_reg, operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file, char* op) {
+    if(reg_a == -1 && reg_b == -1) {
+        fprintf(output_file, "%%reg_%d = %s i32 %d, %d\n", new_reg, op, a, b);
+    } else if(reg_a == -1) {
+        fprintf(output_file, "%%reg_%d = %s i32 %d, %%reg_%d\n", new_reg, op, a, b);
+    } else if(reg_b == -1) {
+        fprintf(output_file, "%%reg_%d = %s i32 %%reg_%d, %d\n", new_reg, op, a, b);
+    } else {
+        fprintf(output_file, "%%reg_%d = %s i32 %%reg_%d, %%reg_%d\n", new_reg, op, a, b);
+    }
+    return new_reg;
+}
+
+operand_t add(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "add");
+}
+operand_t sub(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "sub");
+}
+operand_t mul(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "mul");
+}
+operand_t sdiv(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "sdiv");
+}
+operand_t mod(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "mod");
+}
+operand_t b_and(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "and");
+}
+operand_t b_or(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "or");
+}
+operand_t b_xor(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "xor");
+}
+operand_t lshift(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "lshift");
+}
+operand_t rshift(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
+    return print_util(new_register(), a, b, reg_a, reg_b, output_file, "rshift");
+}
+operand_t lrotate(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
   return (a << b) | (a >> (sizeof(operand_t) * 8 - b));
 }
-operand_t sdiv(operand_t a, operand_t b) {
-  if (b == 0) {
-    return 0;
-  }
-  return a / b;
-}
-operand_t mod(operand_t a, operand_t b){
-  if (b == 0) {
-    return 0;
-  }
-  return a % b;
-}
-operand_t rrotate(operand_t a, operand_t b) {
+operand_t rrotate(operand_t a, operand_t b, int reg_a, int reg_b, FILE* output_file) {
   return (a >> b) | (a << (sizeof(operand_t) * 8 - b));
 }
 operand_t b_not(operand_t a, operand_t null) {
