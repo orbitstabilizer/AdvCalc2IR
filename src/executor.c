@@ -54,6 +54,10 @@ op_t token_to_op(TokenType type) {
     return rrotate;
   case TOKEN_NOT:
     return b_not;
+  case TOKEN_DIV:
+    return sdiv;
+  case TOKEN_MOD:
+    return mod;
   default:
     return NULL;
   }
@@ -69,6 +73,17 @@ operand_t lshift(operand_t a, operand_t b) { return a << b; }
 operand_t rshift(operand_t a, operand_t b) { return a >> b; }
 operand_t lrotate(operand_t a, operand_t b) {
   return (a << b) | (a >> (sizeof(operand_t) * 8 - b));
+operand_t sdiv(operand_t a, operand_t b) {
+  if (b == 0) {
+    return 0;
+  }
+  return a / b;
+}
+operand_t mod(operand_t a, operand_t b){
+  if (b == 0) {
+    return 0;
+  }
+  return a % b;
 }
 operand_t rrotate(operand_t a, operand_t b) {
   return (a >> b) | (a << (sizeof(operand_t) * 8 - b));
