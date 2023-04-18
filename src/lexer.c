@@ -39,7 +39,7 @@ bool parseLong(const char *str, operand_t *val){
     *val = strtol(str, &temp, 0);
 
     if (temp == str || *temp != '\0' ||
-        ((*val == LONG_MIN || *val == LONG_MAX) && errno == ERANGE))
+        ((*val == INT_MIN || *val == INT_MAX) && errno == ERANGE))
         rc = false;
 
     return rc;

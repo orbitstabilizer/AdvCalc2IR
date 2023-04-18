@@ -1,8 +1,8 @@
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
 #define HASHSIZE 31013
-
-typedef operand_t int32_t;
+#include <stdint.h>
+typedef int32_t operand_t;
 /*
  * Chain struct
  * next: pointer to next entry in chain

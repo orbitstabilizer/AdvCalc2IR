@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef operand_t int32_t;
+typedef int32_t operand_t;
 
 /* Token types */
 
