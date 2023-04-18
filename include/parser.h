@@ -25,6 +25,7 @@ struct SyntaxNode {
   SyntaxNode *mid;
   SyntaxNode *right;
   Token *token;
+  int reg;
 };
 
 typedef struct SyntaxTree SyntaxTree;
