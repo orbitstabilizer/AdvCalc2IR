@@ -70,6 +70,8 @@ AdvCalc++ supports the following binary infix arithmetic operations:
   $+$         $a + b$   Sum of $a$ and $b$
   $-$         $a-b$     Difference of $a$ and $b$
   $*$         $a*b$     Product of $a$ and $b$
+  $/$         $a/b$     Quotient of $a$ and $b$
+  $%$         $a%b$     Remainder of $a$ divided by $b$
 
 #### Binary Bitwise Operations
 
@@ -108,7 +110,9 @@ precedence:
 
 1.  Parenthesized expressions (i.e. expressions enclosed in **\"(\"**
     and **\")\"**), and function calls.
-2.  Multiplication (**\"\*\"**)
+2.  Multiplication (**\"*\"**), division (**\"/\"**), and modulo
+    (**\"%\"**). The operations are left associative (i.e. $a * b / c$
+    is evaluated as $(a * b) / c$, not $a * (b / c)$).
 3.  Addition (**\"+\"**) and subtraction (**\"-\"**). The operations are
     left associative (i.e. $a - b + c$ is evaluated as $(a - b) + c$,
     not $a - (b + c)$).
