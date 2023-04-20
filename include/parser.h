@@ -3,6 +3,11 @@
 
 #include "lexer.h"
 
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+
+
 typedef enum SyntaxNodeType { BINOP, UNOP, PAREN, TOKEN, ERROR } SyntaxNodeType;
 
 typedef struct SyntaxNode SyntaxNode;

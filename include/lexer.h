@@ -3,6 +3,10 @@
 
 #define MAX_TOKEN_LEN 257
 
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
@@ -59,6 +63,7 @@ struct Token {
   char *start;
   size_t length;
   operand_t value;
+  int reg;
 };
 
 /* Lexer struct
