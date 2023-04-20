@@ -56,6 +56,10 @@ Lexer *lexer_new(char *input, size_t input_len){
 }
 
 void lexer_free(Lexer *lexer){
+    for(int i = 0; i < (int)lexer->cur_token; i++){
+        if (lexer->token_list[i].start)
+            free(lexer->token_list[i].start);
+    }
     free(lexer);
 }
 
@@ -79,10 +83,12 @@ void print_lex(Lexer *lexer){
 }
 
 void init_token(Token *token, TokenType type, operand_t value, size_t value_len, char* start ){
+    token->reg = -1;
     token->type = type;
     token->value = value;
     token->length = value_len;
-    token->start = start;
+    token->start = (char*) malloc(value_len+1);
+    strncpy(token->start, start, value_len);
     if (type == TOKEN_LITERAL){
         char sub_str[value_len + 1];
         strncpy(sub_str, start, value_len);
