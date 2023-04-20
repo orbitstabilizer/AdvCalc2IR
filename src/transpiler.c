@@ -7,11 +7,15 @@ int new_register();
 int load(Dictionary *dict, char *value, FILE *output_file);
 int declare(Dictionary *dict, char *variable, FILE *output_file);
 void print_var(FILE *output_file, Token* reg);
-Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *right_reg, FILE *output_file);
+Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *right_reg, FILE *output_file, bool *error);
 void store(Dictionary *dict, char *name, Token *reg, FILE *output_file);
 
-Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *right_reg, FILE *output_file) {
+Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *right_reg, FILE *output_file, bool *error) {
     if (type == UNOP){
+        if (*error || !left_reg ){
+            *error = true;
+            return NULL;
+        }
         root->reg = new_register();
         if (left_reg->reg == -1) {
             fprintf(output_file, "  %%reg_%d = call i32 @not(i32 %s)\n", root->reg, left_reg->start);
@@ -22,6 +26,10 @@ Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *r
 
     }
     else if (type == BINOP){
+        if (*error || !left_reg || !right_reg){
+            *error = true;
+            return NULL;
+        }
         char op_name[20];
         int is_func = 0;
         switch (root->type) {
@@ -64,7 +72,7 @@ Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *r
                 strcpy(op_name, "lt");
                 break;
             default:
-                // TODO: Raise error
+                *error = true;
                 return NULL;
         }
         if (!is_func){
@@ -101,7 +109,7 @@ Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *r
         return root;
 
     }
-    // TODO: Raise error
+    *error = true;
     return NULL;
 }
 int load(Dictionary *dict, char *value, FILE *output_file) {
@@ -130,7 +138,6 @@ void store(Dictionary *dict, char *name, Token *reg, FILE *output_file) {
 
 }
 void print_var(FILE *output_file, Token* reg) {
-    //TODO: handle the case where the token is a literal, register, or identifier
     if (reg->reg == -1)
         fprintf(output_file, "  call i32 (i8*, ...) @printf(i8* getelementptr ([4 x i8], [4 x i8]* @print.str, i32 0, i32 0), i32 %s)\n", reg->start);
     else
@@ -169,14 +176,14 @@ Token* translate(SyntaxNode *root, Dictionary *dict, FILE *output_file, bool *er
     }
     if (root->type == UNOP){
         Token* reg = translate(root->left, dict, output_file, error);
-        // TODO: Perform the unary operation
-        return print_op(UNOP,root->mid->token,  reg, NULL, output_file);
+
+        return print_op(UNOP,root->mid->token,  reg, NULL, output_file, error);
     }
     if (root->type == BINOP) {
         Token* left_reg = translate(root->left, dict, output_file, error);
         Token* right_reg = translate(root->right, dict, output_file, error);
-        // TODO: Perform the binary operation
-        return print_op(BINOP,root->mid->token, left_reg, right_reg, output_file);
+
+        return print_op(BINOP,root->mid->token, left_reg, right_reg, output_file, error);
     }
 
     error:
