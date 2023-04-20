@@ -3,8 +3,7 @@
 #include "parser.h"
 #include <string.h>
 
-#undef DEBUG
-#define DEBUG 0
+
 
 static Token **nextToken(Token **tokens);
 static SyntaxNode *newSyntaxNode(SyntaxNodeType type);
