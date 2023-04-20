@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dictionary.h"
-static Chain *put(Dictionary* dict, char *name, operand_t value);
+static Chain *put(Dictionary *dict, char *name);
 static Chain *get(Dictionary* dict, char *s);
 
 Dictionary* new_dictionary(){
@@ -32,7 +32,7 @@ Chain *get(Dictionary* dict, char *s)
 }
 
 
-Chain *put(Dictionary* dict, char *name, operand_t value)
+Chain *put(Dictionary *dict, char *name)
 {
     Chain *np;
     unsigned hashval;
@@ -43,8 +43,7 @@ Chain *put(Dictionary* dict, char *name, operand_t value)
         hashval = hash(name);
         np->next = dict->hashtab[hashval];
         dict->hashtab[hashval] = np;
-    } 
-    np->value = value;
+    }
     return np;
 }
 
@@ -78,19 +77,17 @@ void free_dict(Dictionary* dict){
   free(dict);
 }
 
-void set_var(Dictionary *dict, char *name, operand_t value){
-  put(dict, name, value);
+void declare_var(Dictionary *dict, char *name) {
+    put(dict, name);
 }
 
-operand_t get_var(Dictionary *dict, char *name, int *is_declared){
+int is_declared(Dictionary *dict, char *name) {
   Chain* bin = get(dict, name);
   if(bin == NULL){
-    // if varialbe is not declared 
-    *is_declared = 0;
+    // if variable is not declared
     return 0;
   }
-  *is_declared = 1;
-  return bin->value;
+  return 1;
 }
 
 /* int main(){
@@ -119,7 +116,7 @@ operand_t get_var(Dictionary *dict, char *name, int *is_declared){
   set_var(dict, "thirteen", 13);
   set_var(dict, "fourteen", 14);
   set_var(dict, "fifteen", 15);
-  set_var(dict, "sixteen", 16);
+  declare_var(dict, "sixteen", 16);
   set_var(dict, "seventeen", 17);
   set_var(dict, "eighteen", 18);
   set_var(dict, "nineteen", 19);
@@ -138,7 +135,7 @@ operand_t get_var(Dictionary *dict, char *name, int *is_declared){
   
   // print_table();
   printf("twentytwo = %ld\n", get_var(dict, "twentytwo"));
-  printf("twentynine = %ld\n", get_var(dict, "twentynine"));
+  printf("twentynine = %ld\n", is_declared(dict, "twentynine"));
   print_dict(dict);
   free_dict(dict);
   return 0;

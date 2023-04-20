@@ -37,14 +37,14 @@ Dictionary* new_dictionary();
  * name: name of variable
  * value: value of variable
  */
-void set_var(Dictionary *dict, char *name, operand_t value);
+void declare_var(Dictionary *dict, char *name);
 
 /*
  * Get a variable from the dictionary
  * dict: dictionary to get variable from
  * name: name of variable
  */
-operand_t get_var(Dictionary *dict, char *name, int* is_declared);
+int is_declared(Dictionary *dict, char *name);
 
 /*
  * Free a dictionary
