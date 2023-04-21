@@ -2,7 +2,7 @@ INCLUDE_DIR=./include/
 SRC_DIR=./src/
 EXEC=advcalc2ir
 BIN_DIR=./bin/
-CC=gcc-12
+CC=gcc
 BUILD_CFLAGS=--std=gnu11 -I $(INCLUDE_DIR) 
 DEBUG_CFLAGS= -g -Wall -Wextra  -pedantic #-fsanitize=address
 
