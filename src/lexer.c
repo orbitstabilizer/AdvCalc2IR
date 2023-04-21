@@ -87,7 +87,7 @@ void init_token(Token *token, TokenType type, operand_t value, size_t value_len,
     token->type = type;
     token->value = value;
     token->length = value_len;
-    token->start = (char*) malloc(value_len+1);
+    token->start = (char*) calloc(value_len + 1, sizeof(char));
     strncpy(token->start, start, value_len);
     if (type == TOKEN_LITERAL){
         char sub_str[value_len + 1];
