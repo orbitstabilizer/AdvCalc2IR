@@ -6,7 +6,7 @@
 
 
 #define BUFFER_SIZE 257
-#define MAX_FILENAME 30
+#define MAX_FILENAME 257
 void prelog(FILE* fp);
 void epilog(FILE* fp);
 /*
@@ -92,20 +92,15 @@ int main(int argc, char* argv[]) {
 
   char buffer[BUFFER_SIZE];
   Dictionary *dict = new_dictionary();
+  bool error = false;
   while (true) {
-    // fprintf(output_file, "> ");
     if(fgets(buffer, BUFFER_SIZE, fp) == NULL)
       break;
-    // char output[31];
     int state = exec(dict,buffer,output_file);
     switch (state) {
-      case 0:
-        // printf("%s\n", output);
-        // fprintf(output_file, "%s\n", output);
-        break;
       case 2:
-        printf("Error on line %d\n", line_number);
-        // fprintf(output_file, "Error!\n");
+        printf("Error on line %d!\n", line_number);
+        error = true;
         break;
       default:
         break;
@@ -116,6 +111,12 @@ int main(int argc, char* argv[]) {
     free_dict(dict);
   epilog(output_file);
   fclose(fp);
+  // if error remove output file
+  // WARNING: if a file with the same name as the output file exists it will be deleted
+  if(error){
+    remove(output_filename);
+  }
+
   return 0;
 
 }
