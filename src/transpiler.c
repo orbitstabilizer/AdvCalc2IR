@@ -69,7 +69,7 @@ Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *r
                 break;
             case TOKEN_LR:
                 is_func = 1;
-                strcpy(op_name, "lt");
+                strcpy(op_name, "lr");
                 break;
             default:
                 *error = true;
