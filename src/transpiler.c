@@ -61,7 +61,7 @@ Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *r
                 strcpy(op_name, "shl");
                 break;
             case TOKEN_RS:
-                strcpy(op_name, "lshr");
+                strcpy(op_name, "ashr");
                 break;
             case TOKEN_RR:
                 is_func = 1;
