@@ -220,8 +220,8 @@ int exec(Dictionary *dict, char *input, FILE* output_file) {
   else
     tree = parse(lexer->token_list);
   bool eval_err = false;
-  if (is_assignment && (declare(dict, variable,output_file) == -1) )
-      goto execution_error;
+  if (is_assignment)
+      declare(dict, variable,output_file);
   Token* res = translate(tree->root, dict, output_file,  &eval_err);
   if (eval_err)
       goto execution_error;
