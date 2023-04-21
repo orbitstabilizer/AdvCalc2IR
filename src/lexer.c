@@ -166,14 +166,14 @@ void lexer_next(Lexer *lexer){
         lexer->cur_token++;
         return;
     }
-
-    if (c == ';'){
-        init_token(token, TOKEN_EOF, 0, lexer->input_len - lexer->cur_pos, &lexer->input[lexer->cur_pos]);
-        lexer->cur_pos = lexer->input_len;
-        lexer->cur_token++;
-        return;
-
-    }
+// This lexes comments, and ignores them
+//    if (c == ';'){
+//        init_token(token, TOKEN_EOF, 0, lexer->input_len - lexer->cur_pos, &lexer->input[lexer->cur_pos]);
+//        lexer->cur_pos = lexer->input_len;
+//        lexer->cur_token++;
+//        return;
+//
+//    }
     //  xor, ls, rs, not, lr, rr
     if (c == 'l' && lexer->cur_pos <= lexer->input_len - 2 && !isalpha( lexer->input[lexer->cur_pos +2] )){
         if (lexer->input[lexer->cur_pos + 1] == 's'){
