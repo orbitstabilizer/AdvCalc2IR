@@ -11,8 +11,10 @@ date: 2023-04-06
 	- [x] Add modulo and division operations
 	- [x] Change variable type to int32 in lexer, executor 
 	- [x] Read/Write from file
-	- [ ] Write translation Code
-	- [ ] Error handling: undeclared variables
+	- [x] Write translation Code
+	- [x] Error handling: undeclared variables
+    - [x] If error, don't write to file
+    - [x] Comments 
 
 # AdvCalc++ Transcompiler
 
@@ -67,11 +69,11 @@ AdvCalc++ supports the following binary infix arithmetic operations:
 
   Operation   Use       Description
   ----------- --------- ---------------------------
-  $+$         $a + b$   Sum of $a$ and $b$
-  $-$         $a-b$     Difference of $a$ and $b$
+  $+$        $a + b$    Sum of $a$ and $b$
+  $-$        $a-b$    Difference of $a$ and $b$
   $*$         $a*b$     Product of $a$ and $b$
-  $/$         $a/b$     Quotient of $a$ and $b$
-  $%$         $a%b$     Remainder of $a$ divided by $b$
+  $/$         $a/b$      Quotient of $a$ and $b$
+  $\%$        $a\%b$     Remainder of $a$ divided by $b$
 
 #### Binary Bitwise Operations
 
@@ -476,14 +478,14 @@ Dictionary* new_dictionary();
  * name: name of variable
  * value: value of variable
  */
-void set_var(Dictionary *dict, char *name, long value);
+void declare_var(Dictionary *dict, char *name, long value);
 
 /*
  * Get a variable from the dictionary
  * dict: dictionary to get variable from
  * name: name of variable
  */
-long get_var(Dictionary *dict, char *name);
+long is_declared(Dictionary *dict, char *name);
 
 /*
  * Free a dictionary
@@ -522,11 +524,7 @@ unsigned hash(char *s);
 
 **Q:** What difficulties did you encounter?
 
--   Not many, we spend a couple of hours to fix a memory leak problem in
-    parser.c, we used address sanitizer stack trace. Other than this, we
-    didn\'t encounter any major technical difficulty.
--   For me, the most difficult part was to wait for Atakan to push his
-    task. Most probably, I am just very impatient. (Yusuf)
+
 
 **Q:** How to get a pdf version of the README.md ?
 
