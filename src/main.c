@@ -76,6 +76,7 @@ int main(int argc, char* argv[]) {
   FILE *fp = fopen(argv[1], "r");
   if (fp == NULL) {
     LOG_ERROR("Could not open file %s", argv[1]);
+    return 1;
   }
   int line_number = 1 ;
   // split filename file.adv to file
