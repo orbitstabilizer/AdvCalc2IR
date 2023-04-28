@@ -39,7 +39,10 @@ SyntaxNode *parse_expr(Token **tokens) {
     return NULL;
   SyntaxNode *node = parse_term(tokens);
   if ((*tokens)->type != TOKEN_EOF) {
-    node->type = ERROR;
+      if (node == NULL)
+          node = newSyntaxNode(ERROR);
+      else
+          node->type = ERROR;
     LOG_ERROR("Expected EOF, got %s\n", (*tokens)->start);
   }
   return node;
@@ -143,7 +146,7 @@ SyntaxNode *parse_func(Token **tokens) {
 
     SyntaxNode *temp = parse_paren(nextToken(tokens));
 
-    if (temp != NULL && temp->left != NULL && temp->left->mid != NULL &&
+    if (temp != NULL && temp->type != ERROR && temp->left != NULL && temp->left->mid != NULL &&
         temp->left->mid->token->type == TOKEN_COMMA) {
       node->left = temp->left->left;
       node->right = temp->left->right;
