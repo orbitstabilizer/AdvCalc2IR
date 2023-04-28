@@ -143,7 +143,7 @@ SyntaxNode *parse_func(Token **tokens) {
 
     SyntaxNode *temp = parse_paren(nextToken(tokens));
 
-    if (temp != NULL && temp->left != NULL && temp->left->mid != NULL &&
+    if (temp != NULL && temp->type != ERROR && temp->left != NULL && temp->left->mid != NULL &&
         temp->left->mid->token->type == TOKEN_COMMA) {
       node->left = temp->left->left;
       node->right = temp->left->right;
@@ -202,7 +202,8 @@ SyntaxNode *parse_paren(Token **tokens) {
 
     return node;
   }
-  return NULL;
+  SyntaxNode *node = newSyntaxNode(ERROR);
+  return node;
 }
 
 void free_syntax_node(SyntaxNode *node) {
