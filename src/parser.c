@@ -162,7 +162,7 @@ SyntaxNode *parse_func(Token **tokens) {
     node->mid = newTokenNode(tokens);
 
     SyntaxNode *temp = parse_paren(nextToken(tokens));
-    if (temp != NULL && temp->left != NULL &&
+    if (temp != NULL && temp->type != ERROR && temp->left != NULL &&
         (temp->left->mid == NULL ||
          temp->left->mid->token->type != TOKEN_COMMA)) {
       node->left = temp->left;
