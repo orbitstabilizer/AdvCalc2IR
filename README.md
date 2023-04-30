@@ -144,14 +144,14 @@ See the **lexer.c** line 170 for the implementation of the comment support.
 
 ## Program Structure and Implementation
 
-**AdvCalc++** is implemented in **c**. Since **AdvCalc++** is an interpreted language, it is possible to _translate 
+**AdvCalc++** is implemented in **c**. Since **AdvCalc++** is an interpreted language, it is possible to translate 
 the source code line by line. In fact, the program reads the source code line by line, tokenizes it, parses it, and generates
 the corresponding **LLVM IR** code. 
 
 The program is divided into the following modules:
 
 -   **main.c**: The main module of the program.
-    All io operations are done within this module. 
+    All input-output operations are done within this module. 
 -   **lexer.c**: The lexer module. It contains the functions that
     tokenize the input string.
 -   **parser.c**: The parser module. It contains the functions that
@@ -187,10 +187,10 @@ The error message shows the line number of the error in the source code.
 After all lines have been processed, the program calls the epilog function to write some code at the end of the output file. 
 The program then closes both the input and output files.
 
-If the error flag has been set, indicating that an error occurred during the trans compilation process, 
+If the error flag has been set, indicating that an error occurred during the trans-compilation process, 
 the output file is removed. If no errors occurred, the program exits with a status of 0.
 
-**WARNING**: The program doen not check for any file extension. 
+**WARNING**: The program does not check for any file extension. 
 The program will overwrite any file with the same name and a ".ll" extension.
 And in case of an error, the program will remove the output file, so, if you have a file with the same name and a ".ll" extension, it will be removed.
 
@@ -667,7 +667,7 @@ k=x+3*y*(1*(2+5))
 k+1
 ```
 
-Traslating...
+Translating...
 ```bash
 $ ./advcalc2ir test1.adv
 $ ls 
