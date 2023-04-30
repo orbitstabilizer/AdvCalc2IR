@@ -67,6 +67,19 @@ void epilog(FILE* fp){
   fprintf(fp, "}\n");
 }
 
+void strip_ext(char *fname)
+{
+    char *end = fname + strlen(fname);
+
+    while (end > fname && *end != '.' && *end != '\\' && *end != '/') {
+        --end;
+    }
+    if ((end > fname && *end == '.') &&
+        (*(end - 1) != '\\' && *(end - 1) != '/')) {
+        *end = '\0';
+    }  
+}
+
 int main(int argc, char* argv[]) {
 
   if (argc < 2) {
@@ -80,7 +93,8 @@ int main(int argc, char* argv[]) {
   }
   int line_number = 1 ;
   // split filename file.adv to file
-  char *filename = strtok(argv[1], ".");
+  char *filename = argv[1];
+  strip_ext(argv[1]);
   char output_filename[MAX_FILENAME];
   strcpy(output_filename, filename);
   strcat(output_filename, ".ll");
