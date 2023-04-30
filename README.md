@@ -779,7 +779,7 @@ Error on line 4!
 - We learned how to use LLVM IR to generate executable code from a high-level language.
 
 **Q:** What would you do differently if you were to do this project again?
-- We would add more make the parser more extensible by adding more operators, functions, and variables.
+- We would make the parser more extensible for adding more operators, functions, and variables.
 
 **Q:** How to get a pdf version of the README.md ?
 
