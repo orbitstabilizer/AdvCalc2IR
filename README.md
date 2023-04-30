@@ -388,21 +388,21 @@ SyntaxNode *parse_and(Token **tokens);
 
 /*
  * parses <term>(+|-)<term>
- * calls parse_mul and assigns it to left child as left <term>
+ * calls parse_mul_div_mod and assigns it to left child as left <term>
  * then if plus or minus exists
  * assigns TOKEN_PLUS or TOKEN_MINUS to mid child
- * calls parse_mul and assigns it to right child as right <term>
+ * calls parse_mul_div_mod and assigns it to right child as right <term>
  */
 SyntaxNode *parse_plus_minus(Token **tokens);
 
 /*
  * parses <term>*<term>
  * calls parse_primary and assigns it to left child as left <term>
- * then if star exists
- * assigns TOKEN_STAR to mid child
+ * then if star, div or mod exists
+ * assigns TOKEN_STAR or TOKEN_DIV or TOKEN_MOD to mid child
  * calls parse_primary and assigns it to right child as right <term>
  */
-SyntaxNode *parse_mul(Token **tokens);
+SyntaxNode *parse_mul_div_mod(Token **tokens);
 
 /*
  * parses <primary>
