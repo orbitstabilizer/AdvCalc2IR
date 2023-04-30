@@ -2,13 +2,7 @@
 #include "transpiler.h"
 #include "debug.h"
 
-Token * translate(SyntaxNode *root, Dictionary *dict, FILE *output_file, bool *error);
-int new_register();
-int load(Dictionary *dict, char *value, FILE *output_file);
-int declare(Dictionary *dict, char *variable, FILE *output_file);
-void print_var(FILE *output_file, Token* reg);
-Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *right_reg, FILE *output_file, bool *error);
-void store(Dictionary *dict, char *name, Token *reg, FILE *output_file);
+static Token * _translate(SyntaxNode *root, Dictionary *dict, FILE *output_file, bool *error);
 
 Token *print_op(enum SyntaxNodeType type, Token *root, Token *left_reg, Token *right_reg, FILE *output_file, bool *error) {
     if (type == UNOP){
@@ -153,7 +147,7 @@ int new_register() { return register_count++; }
     goto error;                                                                \
   } while (0)
 
-Token* translate(SyntaxNode *root, Dictionary *dict, FILE *output_file, bool *error) {
+Token* _translate(SyntaxNode *root, Dictionary *dict, FILE *output_file, bool *error) {
     if (*error || root == NULL || root->type == ERROR)
         RAISE_ERROR;
     if (root->type == TOKEN) {
@@ -172,16 +166,16 @@ Token* translate(SyntaxNode *root, Dictionary *dict, FILE *output_file, bool *er
     }
     if (root->type == PAREN){
         // Parentheses just evaluate the expression inside
-        return translate(root->left, dict, output_file, error);
+        return _translate(root->left, dict, output_file, error);
     }
     if (root->type == UNOP){
-        Token* reg = translate(root->left, dict, output_file, error);
+        Token* reg = _translate(root->left, dict, output_file, error);
 
         return print_op(UNOP,root->mid->token,  reg, NULL, output_file, error);
     }
     if (root->type == BINOP) {
-        Token* left_reg = translate(root->left, dict, output_file, error);
-        Token* right_reg = translate(root->right, dict, output_file, error);
+        Token* left_reg = _translate(root->left, dict, output_file, error);
+        Token* right_reg = _translate(root->right, dict, output_file, error);
 
         return print_op(BINOP,root->mid->token, left_reg, right_reg, output_file, error);
     }
@@ -191,7 +185,7 @@ Token* translate(SyntaxNode *root, Dictionary *dict, FILE *output_file, bool *er
     return NULL;
 }
 
-int exec(Dictionary *dict, char *input, FILE* output_file) {
+int translate(Dictionary *dict, char *input, FILE* output_file) {
   size_t input_len = strlen(input);
   Lexer *lexer = lexer_new(input, input_len);
   SyntaxTree *tree = NULL;
@@ -222,7 +216,7 @@ int exec(Dictionary *dict, char *input, FILE* output_file) {
   bool eval_err = false;
   if (is_assignment)
       declare(dict, variable,output_file);
-  Token* res = translate(tree->root, dict, output_file,  &eval_err);
+  Token* res = _translate(tree->root, dict, output_file, &eval_err);
   if (eval_err)
       goto execution_error;
   else if(is_assignment){

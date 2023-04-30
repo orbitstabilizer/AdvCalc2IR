@@ -97,7 +97,7 @@ int main(int argc, char* argv[]) {
   while (true) {
     if(fgets(buffer, BUFFER_SIZE, fp) == NULL)
       break;
-    int state = exec(dict,buffer,output_file);
+    int state = translate(dict,buffer,output_file);
     switch (state) {
       case 2:
         printf("Error on line %d!\n", line_number);
